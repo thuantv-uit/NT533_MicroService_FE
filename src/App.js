@@ -37,15 +37,15 @@ function App() {
   }, []);
 
   const fetchData = () => {
-    axios.get('http://localhost:3001/users')
+    axios.get(`${process.env.REACT_APP_USER_SERVICE_URL}/users`)
       .then(res => setUsers(res.data))
       .catch(err => setError('Error fetching users: ' + err.message));
 
-    axios.get('http://localhost:3002/dashboard')
+    axios.get(`${process.env.REACT_APP_DASHBOARD_SERVICE_URL}/dashboard`)
       .then(res => setDashboard(res.data))
       .catch(err => setError('Error fetching dashboard: ' + err.message));
 
-    axios.get('http://localhost:3003/shopping/cart')
+    axios.get(`${process.env.REACT_APP_SHOPPING_SERVICE_URL}/shopping/cart`)
       .then(res => setCart(res.data))
       .catch(err => setError('Error fetching cart: ' + err.message));
   };
@@ -54,7 +54,7 @@ function App() {
   const handleUserSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3001/users', userInput);
+      await axios.post(`${process.env.REACT_APP_USER_SERVICE_URL}/users`, userInput);
       setUserInput({ name: '', email: '' }); // Reset form
       fetchData(); // Refresh dữ liệu
     } catch (err) {
@@ -66,7 +66,7 @@ function App() {
   const handleDashboardSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3002/dashboard', dashboardInput);
+      await axios.post(`${process.env.REACT_APP_DASHBOARD_SERVICE_URL}/dashboard`, dashboardInput);
       setDashboardInput({ sales: 0, users: 0 }); // Reset form
       fetchData();
     } catch (err) {
@@ -78,7 +78,7 @@ function App() {
   const handleCartSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3003/shopping/cart', cartInput);
+      await axios.post(`${process.env.REACT_APP_SHOPPING_SERVICE_URL}/shopping/cart`, cartInput);
       setCartInput({ name: '', price: 0 }); // Reset form
       fetchData();
     } catch (err) {
