@@ -37,15 +37,15 @@ function App() {
   }, []);
 
   const fetchData = () => {
-    axios.get(`${process.env.REACT_APP_USER_SERVICE_URL}/users`)
+    axios.get('http://httpb.user.quantc.uit/users')
       .then(res => setUsers(res.data))
       .catch(err => setError('Error fetching users: ' + err.message));
 
-    axios.get(`${process.env.REACT_APP_DASHBOARD_SERVICE_URL}/dashboard`)
+    axios.get('http://httpb.dashboard.quantc.uit/dashboard')
       .then(res => setDashboard(res.data))
       .catch(err => setError('Error fetching dashboard: ' + err.message));
 
-    axios.get(`${process.env.REACT_APP_SHOPPING_SERVICE_URL}/shopping/cart`)
+    axios.get('http://httpb.shopping.quantc.uit/shopping/cart')
       .then(res => setCart(res.data))
       .catch(err => setError('Error fetching cart: ' + err.message));
   };
@@ -54,7 +54,7 @@ function App() {
   const handleUserSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${process.env.REACT_APP_USER_SERVICE_URL}/users`, userInput);
+      await axios.post('http://httpb.user.quantc.uit/users', userInput);
       setUserInput({ name: '', email: '' }); // Reset form
       fetchData(); // Refresh dữ liệu
     } catch (err) {
@@ -66,7 +66,7 @@ function App() {
   const handleDashboardSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${process.env.REACT_APP_DASHBOARD_SERVICE_URL}/dashboard`, dashboardInput);
+      await axios.post('http://httpb.dashboard.quantc.uit/dashboard', dashboardInput);
       setDashboardInput({ sales: 0, users: 0 }); // Reset form
       fetchData();
     } catch (err) {
@@ -78,7 +78,7 @@ function App() {
   const handleCartSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${process.env.REACT_APP_SHOPPING_SERVICE_URL}/shopping/cart`, cartInput);
+      await axios.post('http://httpb.shopping.quantc.uit/shopping/cart', cartInput);
       setCartInput({ name: '', price: 0 }); // Reset form
       fetchData();
     } catch (err) {
