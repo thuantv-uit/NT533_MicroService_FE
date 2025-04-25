@@ -48,7 +48,7 @@ function App() {
 
   const fetchData = () => {
     axios
-      .get(`${userApiUrl}/user`)
+      .get(`${userApiUrl}/users`)
       .then((res) => setUsers(res.data))
       .catch((err) => setError('Error fetching users: ' + err.message));
 
@@ -71,7 +71,7 @@ function App() {
       return;
     }
     try {
-      await axios.post(`${userApiUrl}/user`, userInput);
+      await axios.post(`${userApiUrl}/users`, userInput);
       setUserInput({ name: '', email: '' }); // Reset form
       fetchData(); // Refresh dữ liệu
     } catch (err) {
