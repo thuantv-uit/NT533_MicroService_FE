@@ -31,30 +31,47 @@ function App() {
   const [dashboardInput, setDashboardInput] = useState({ sales: 0, users: 0 });
   const [cartInput, setCartInput] = useState({ name: '', price: 0 });
 
-  // Load dữ liệu ban đầu
+  // Kiểm tra các biến môi trường
+  const userApiUrl = process.env.REACT_APP_USER_SERVICE_URL;
+  const dashboardApiUrl = process.env.REACT_APP_DASHBOARD_SERVICE_URL;
+  const shoppingApiUrl = process.env.REACT_APP_SHOPPING_SERVICE_URL;
+
   useEffect(() => {
+    // Kiểm tra xem các biến môi trường có được định nghĩa không
+    if (!userApiUrl || !dashboardApiUrl || !shoppingApiUrl) {
+      setError('Missing environment variables. Please check your .env file or ConfigMap.');
+      return;
+    }
     fetchData();
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userApiUrl, dashboardApiUrl, shoppingApiUrl]);
 
   const fetchData = () => {
-    axios.get('http://httpb.user.quantc.uit/users')
-      .then(res => setUsers(res.data))
-      .catch(err => setError('Error fetching users: ' + err.message));
+    axios
+      .get(`${userApiUrl}/user`)
+      .then((res) => setUsers(res.data))
+      .catch((err) => setError('Error fetching users: ' + err.message));
 
-    axios.get('http://httpb.dashboard.quantc.uit/dashboard')
-      .then(res => setDashboard(res.data))
-      .catch(err => setError('Error fetching dashboard: ' + err.message));
+    axios
+      .get(`${dashboardApiUrl}/dashboard`)
+      .then((res) => setDashboard(res.data))
+      .catch((err) => setError('Error fetching dashboard: ' + err.message));
 
-    axios.get('http://httpb.shopping.quantc.uit/shopping/cart')
-      .then(res => setCart(res.data))
-      .catch(err => setError('Error fetching cart: ' + err.message));
+    axios
+      .get(`${shoppingApiUrl}/shopping/cart`)
+      .then((res) => setCart(res.data))
+      .catch((err) => setError('Error fetching cart: ' + err.message));
   };
 
   // Xử lý form User
   const handleUserSubmit = async (e) => {
     e.preventDefault();
+    if (!userApiUrl) {
+      setError('Missing USER_API_URL environment variable.');
+      return;
+    }
     try {
-      await axios.post('http://httpb.user.quantc.uit/users', userInput);
+      await axios.post(`${userApiUrl}/user`, userInput);
       setUserInput({ name: '', email: '' }); // Reset form
       fetchData(); // Refresh dữ liệu
     } catch (err) {
@@ -65,8 +82,12 @@ function App() {
   // Xử lý form Dashboard
   const handleDashboardSubmit = async (e) => {
     e.preventDefault();
+    if (!dashboardApiUrl) {
+      setError('Missing DASHBOARD_API_URL environment variable.');
+      return;
+    }
     try {
-      await axios.post('http://httpb.dashboard.quantc.uit/dashboard', dashboardInput);
+      await axios.post(`${dashboardApiUrl}/dashboard`, dashboardInput);
       setDashboardInput({ sales: 0, users: 0 }); // Reset form
       fetchData();
     } catch (err) {
@@ -77,8 +98,12 @@ function App() {
   // Xử lý form Cart
   const handleCartSubmit = async (e) => {
     e.preventDefault();
+    if (!shoppingApiUrl) {
+      setError('Missing SHOPPING_API_URL environment variable.');
+      return;
+    }
     try {
-      await axios.post('http://httpb.shopping.quantc.uit/shopping/cart', cartInput);
+      await axios.post(`${shoppingApiUrl}/shopping/cart`, cartInput);
       setCartInput({ name: '', price: 0 }); // Reset form
       fetchData();
     } catch (err) {
@@ -158,7 +183,7 @@ function App() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {users.map(user => (
+                      {users.map((user) => (
                         <TableRow key={user._id}>
                           <TableCell>{user.name}</TableCell>
                           <TableCell>{user.email}</TableCell>
@@ -261,7 +286,7 @@ function App() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {cart.map(item => (
+                      {cart.map((item) => (
                         <TableRow key={item._id}>
                           <TableCell>{item.name}</TableCell>
                           <TableCell>${item.price}</TableCell>
